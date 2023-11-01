@@ -1,0 +1,756 @@
+
+/* 1. GLOBAL COLORS */
+
+    :root {
+        --lightGray: #F8F9FA;
+        --darkGray: #202124;
+        --disabledGray: #FAFAFA;
+        --borderGray: #ecedee;
+        --blue: #4484f4;
+        --darkBlue: #356dce;
+        --lightBlue: #d5e2f8;
+        --disabledText: rgb(170, 170, 170);
+    }
+
+/* end of global colors */
+
+/* 2. DEFAULTS */
+
+    .gf-wrapper, .gf-wrapper * {
+        box-sizing: border-box;
+    }
+
+    .gf-wrapper button {
+        font-family:  inherit;
+        cursor: pointer;
+    }
+
+    .gf-wrapper button:focus {
+        outline: none;
+    }
+
+    .gf-wrapper img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+/* end of defaults */
+
+/* 3. WRAPPER */
+
+    .gf-wrapper {
+        width: 100%;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+        font-size: 13px;
+        background-color: var(--lightGray);
+        position: relative;
+        padding: 20px 0;
+        color: var(--darkGray)
+    }
+
+/* end of wrapper */
+
+/* 4. LOADER */
+
+    .gf-loader-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gf-wrapper.gf-activated .gf-loader-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;       
+    }
+
+    .gf-loader-wrapper.gf-hide {
+        display: none;
+    }
+
+    .gf-loader {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 4px solid var(--lightGray);
+        border-top: 4px solid var(--blue);
+        animation: gf-spin 2s linear infinite;
+    }
+
+/* end of loader */
+
+/* 5. ALERT BOX */
+
+    /* 5.1 ALERT CONTAINER */
+
+        .gf-alert-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .gf-wrapper.gf-activated .gf-alert-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;        
+        }
+
+        .gf-alert-container.gf-hide {
+            display: none;
+        }
+
+    /* end of alert container */
+ 
+    /* 5.2 ALERT BOX */
+
+        .gf-alert {
+            width: 345px;
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 5px rgba(0,0,0,0.06);
+            position: relative;
+            top: 0;
+            transition: top 0.6s;
+        }
+
+        .gf-alert-container.gf-hide .gf-alert {
+            top: -100%;
+        }
+
+    /* end of alert box */
+
+    /* 5.3 ALERT TITLE */
+
+        .gf-alert-title-container {
+            padding: 20px;
+        }
+
+        .gf-alert-title {
+            font-weight: normal;
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.6;
+        }
+
+    /* end of alert title */
+
+    /* 5.4 ALERT CONTENT */
+
+        .gf-alert-content {
+            padding: 20px 20px 20px 30px;
+        }
+
+    /* end of alert content */
+
+    /* 5.5 ALERT TEXT */
+
+        .gf-alert-text {
+            line-height: 200%;
+        }
+
+    /* end of alert text */
+
+    /* 5.6 ALERT BUTTON */
+
+        .gf-alert-button {
+            display: inline-block;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.06);
+            padding: 15px;
+            border: none;
+            transition: background-color 0.6s, color 0.6s, box-shadow 0.6s;
+            border-radius: 4px;
+        }
+
+        .gf-alert-button:hover {
+            background-color: var(--blue);
+            color: #fff;
+        }
+
+        .gf-alert-button:focus {
+            box-shadow: 0 0 5px rgba(0,0,0,0.08);
+        }
+
+    /* end of alert button */
+
+/* end of alert box */
+
+/* 6. FORM COMPONENTS */
+
+    /* 6.1 FORM */
+
+        .gf-form {
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.06);
+            overflow: hidden;
+            width: 45%;
+            margin: auto;
+            position: relative;
+        }
+
+    /* end of form */
+
+    /* 6.2 FORM TITLE AND SUMMARY */
+
+        .gf-form-title-and-summary {
+            border-bottom: thin #ecedee solid;
+            padding: 30px;
+        }
+
+        .gf-form.gf-disabled .gf-form-title-and-summary {
+            color: var(--disabledText);
+        }
+
+        .gf-form-title {
+            margin: 0;
+            font-weight: normal;
+            font-size: 16px;
+        }
+
+        .gf-form-summary {
+            margin: 0;
+            line-height: 200%;
+        }
+
+    /* end of form title and content */
+
+    /* 6.3 FORM CONTENT */
+
+        .gf-form-content.gf-hide {
+            display: none;
+        }
+ 
+    /* end of form content */
+
+    /* 6.4 FORM OVERLAY */
+
+        .gf-form-overlay {
+            width: 100%;
+            height: 100%;
+            background-color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            transition: top 0.6s;
+        }
+
+        .gf-form-overlay.gf-hide {
+            top: -100%;
+        }
+
+        .gf-form-overlay-content {
+	        display: flex;
+            align-items: center;
+            justify-content: center;
+	        background-color: #fff;
+	        vertical-align: middle;
+	        width: 50px;
+	        height: 50px;
+	        border-radius: 50%;
+	        line-height: 59px;
+	        box-shadow: 0 0 17px 5px rgba(0,0,0,0.2);            
+        }
+
+        .gf-form-overlay-content:after {
+            content: '';
+            display: block;
+            transform: rotate(45deg);
+            height: 20px;
+            width: 8px;
+            border-bottom: 7px solid var(--blue);
+            border-right: 7px solid var(--blue);
+            margin-top: -4px;         
+        }
+
+    /* end of form overlay */
+
+    /* 6.5 BUTTON */
+
+        .gf-form-buttons {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .gf-form-button {
+            display: block;
+            border: none;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.06);
+            transition: background-color 0.6s, color 0.6s, box-shadow 0.6s;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        .gf-form-button:focus {
+            background-color: var(--lightBlue);
+        }
+
+        .gf-form-button:hover {
+            background-color: var(--blue);
+            color: #fff;
+        }
+
+        .gf-form.gf-disabled .gf-form-button {
+            cursor: default;
+        }
+
+        .gf-form.gf-disabled .gf-form-button,
+        .gf-form.gf-disabled .gf-form-button:hover {
+            background-color: var(--disabledGray);
+            color: var(--disabledText)
+        }
+
+    /* end of button */
+
+    /* 6.6 FORM LAYOUT ITEM */
+
+        /* 6.6.1 LAYOUT ITEM WRAPPER */
+
+            .gf-form-layout-item {
+                padding: 15px 0;
+            }
+
+            .gf-form-layout-item.gf-has-page-break {
+                padding: 0 0;
+            }
+
+        /* end of layout item wrapper */
+
+        /* 6.6.2 SECTION HEADER */
+
+            .gf-form-section-header-container {
+                padding: 20px;
+                background-color: var(--lightGray);
+                border-radius: 4px;
+                border-left: thick var(--blue) solid;
+                overflow: hidden;
+            }
+
+            .gf-form-section-header-container .gf-form-summary {
+                font-size: 12px;
+                margin: 5px;
+            }
+
+        /* end of section header */
+
+        /* 6.6.3 IMAGE */
+
+            .gf-form-image {
+                border-radius: 4px;
+            }
+
+            .gf-field-label.gf-for-form-image {
+                cursor: default;
+            }
+
+        /* end of image */
+
+    /* end of form layout item */
+
+    @media only screen and (max-width: 1192px) {
+
+        .gf-form {
+            width: 80%;
+        }
+
+    }
+
+    @media only screen and (max-width: 768px) {
+
+        .gf-form {
+            width: 90%;
+        }
+
+    }
+
+    @media only screen and (max-width: 360px) {
+
+        .gf-form-content {
+            padding: 20px;
+        }
+
+    }
+
+/* end of form components */
+
+/* 7. FIELDS */
+
+    /* 7.1 FIELDSET */
+
+        .gf-fieldset {
+            border: none;
+            margin: 0;
+            padding: 15px 30px;
+            position: relative
+        }
+
+    /* end of fieldset */
+
+    /* 7.2 FIELD LABEL */
+
+        .gf-field-label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.6s;
+        }
+
+        .gf-fieldset.gf-invalid .gf-field-label {
+            color: red;
+        }
+
+        .gf-fieldset.gf-disabled .gf-field-label {
+            cursor: default;
+            color: rgb(170, 170, 170);
+        }
+
+    /* end of field label */
+
+    /* 7.3 RADIO AND CHECKBOX */
+
+        .gf-field[type=radio],
+        .gf-field[type=checkbox] {
+            position: absolute;
+            z-index: -99;
+        }
+
+        .gf-field[type=radio] + .gf-radio-label,
+        .gf-field[type=checkbox] + .gf-checkbox-label,
+        .gf-field[type=radio] + .gf-scale-option-label,
+        .gf-field[type=radio] + .gf-grid-row-column-field-label,
+        .gf-field[type=checkbox] + .gf-grid-row-column-field-label {
+            cursor: pointer;
+        }
+        
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-radio-label,
+        .gf-fieldset.gf-disabled .gf-field[type=checkbox] + .gf-checkbox-label,
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-scale-option-label,
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-grid-row-column-field-label,
+        .gf-fieldset.gf-disabled .gf-field[type=checkbox] + .gf-grid-row-column-field-label {
+            cursor: default;
+        }         
+
+        .gf-field[type=radio] + .gf-radio-label,
+        .gf-field[type=checkbox] + .gf-checkbox-label {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 40px !important;
+            font-size: 14px;
+        }
+
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-radio-label,
+        .gf-fieldset.gf-disabled .gf-field[type=checkbox] + .gf-checkbox-label {
+            color: var(--disabledText);
+        }
+        
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-radio-label:hover,
+        .gf-fieldset.gf-disabled .gf-field[type=checkbox] + .gf-checkbox-label:hover {
+            box-shadow: none;
+            border: thin var(--borderGray) solid;
+            border-bottom: thin var(--borderGray) solid;        
+        }
+
+        .gf-field[type=radio] + .gf-radio-label:before,
+        .gf-field[type=checkbox] + .gf-checkbox-label:before,
+        .gf-field[type=radio] + .gf-scale-option-label:after,
+        .gf-field[type=radio] + .gf-grid-row-column-field-label:after,
+        .gf-field[type=checkbox] + .gf-grid-row-column-field-label:after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background-color: #fff;
+            border: thin #ecedee solid;
+            transition: background-color 0.6s;
+        }
+
+        .gf-field[type=radio]:focus + .gf-radio-label:before,
+        .gf-field[type=checkbox]:focus + .gf-checkbox-label:before,
+        .gf-field[type=radio]:focus + .gf-scale-option-label:after,
+        .gf-field[type=radio]:focus + .gf-grid-row-column-field-label:after,
+        .gf-field[type=checkbox]:focus + .gf-grid-row-column-field-label:after {
+            background-color: var(--lightBlue);
+        }
+    
+        .gf-field[type=radio]:checked + .gf-radio-label:before,
+        .gf-field[type=checkbox]:checked + .gf-checkbox-label:before,
+        .gf-field[type=radio]:checked + .gf-scale-option-label:after,
+        .gf-field[type=radio]:checked + .gf-grid-row-column-field-label:after,
+        .gf-field[type=checkbox]:checked + .gf-grid-row-column-field-label:after {
+            background-color: var(--darkBlue);
+        }
+
+        .gf-field[type=radio] + .gf-radio-label:before,
+        .gf-field[type=checkbox] + .gf-checkbox-label:before {
+            position: absolute;
+            left: 10px;
+        }        
+
+    /* end of radio and checkbox */
+
+    /* 7.4 SCALE */
+
+        .gf-scale {
+            width: 100%;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+        }
+
+        .gf-fieldset.gf-disabled .gf-scale-option-label,
+        .gf-fieldset.gf-disabled .gf-scale-label {
+            color: var(--disabledText);
+        }
+
+        .gf-scale-option-label {
+            display: block;
+            text-align: center;
+            background-color: var(--lightGray);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+         .gf-field[type=radio] + .gf-scale-option-label:after {
+            display: block;
+            margin-top: 15px;
+        }       
+
+    /* end of scale */
+
+    /* 7.5 GRID */
+
+        .gf-grid-wrapper {
+            width: 100%;
+        }
+
+        .gf-fieldset.gf-disabled .gf-grid-wrapper {
+            color: var(--disabledText);
+        }
+
+        .gf-grid {
+            display: table;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            width: 100%;
+        }
+
+        .gf-grid-row {
+            display: table-row-group;
+            
+        }
+
+        .gf-grid-row .gf-grid-row-column {
+            border: solid 1px var(--lightGray);
+            border-style: none solid solid none;
+            background-color: var(--lightGray);
+            border-radius: 4px;
+        }
+
+        .gf-grid-title-row {
+            display: table-row;
+        }
+
+        .gf-grid-title-row .gf-grid-row-column {
+            text-align: center;
+        }
+
+        .gf-grid-row-column {
+            display: table-cell;
+            padding: 15px;
+            min-width: 48px;
+            max-width: 288px;
+        }
+
+        .gf-field[type=radio] + .gf-grid-row-column-field-label:after,
+        .gf-field[type=checkbox] + .gf-grid-row-column-field-label:after {
+            margin: auto;
+            display: block;
+        }
+
+    /* end of grid */
+
+    /* 7.6 DEFAULT FIELD */
+
+        .gf-field,
+        .gf-field[type=radio] + .gf-radio-label,
+        .gf-field[type=checkbox] + .gf-checkbox-label {
+            display: inline-block;
+            width: 100%;
+            border: thin var(--borderGray) solid;
+            padding: 15px;
+            font-family: inherit;
+            border-radius: 4px;
+            text-overflow: ellipsis;
+            transition: 0.6s box-shadow, border 0.6s, background-color 0.6s;
+        }
+
+        .gf-fieldset.gf-disabled .gf-field,
+        .gf-fieldset.gf-disabled .gf-field[type=radio] + .gf-radio-label,
+        .gf-fieldset.gf-disabled .gf-field[type=checkbox] + .gf-checkbox-label {
+            background-color: var(--disabledGray);
+            opacity: 0.6;
+        }    
+
+        .gf-field:focus,
+        .gf-field[type=radio] + .gf-radio-label:hover,
+        .gf-field[type=checkbox] + .gf-checkbox-label:hover {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,0,0,0.09);
+            border: 1px solid rgba(0,0,0,0.09);
+            border-bottom: 1px solid rgba(0,0,0,0.09);        
+        }
+
+        .gf-fieldset.gf-invalid .gf-field,
+        .gf-fieldset.gf-invalid .gf-field[type=radio] + .gf-radio-label,
+        .gf-fieldset.gf-invalid .gf-field[type=checkbox] + .gf-checkbox-label {
+            box-shadow: 0 0 5px #ffdddd;
+            border: 1px solid #ffdddd;
+            background-color: #fdfafa;       
+        }
+
+    /* end of default field */
+
+    @media only screen and (max-width: 480px) {
+
+        .gf-scale {
+            display: block;
+        }
+
+        .gf-scale-label {
+            display: block;
+            padding: 5px 0;
+            text-align: center;
+        }
+
+        .gf-field[type=radio] + .gf-scale-option-label:after {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .gf-scale-option-label {
+            margin: 5px 0;
+        }
+
+    }
+
+    @media only screen and (max-width: 360px) {
+
+        .gf-field,
+        .gf-field[type=radio] + .gf-radio-label,
+        .gf-field[type=checkbox] + .gf-checkbox-label {
+            padding: 10px;
+        }       
+
+    }
+
+/* end of fields */
+
+/* 8. INFORM */
+
+    .gf-inform-container {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--lightGray);
+        padding: 0 20px;
+        border-radius: 4px;
+    }
+
+    .gf-inform {
+        margin: 0;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.06);
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+/* end of inform */
+
+/* 9. ANIMATIONS */
+
+    /* 9.1 SPIN */
+
+        @keyframes gf-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    /* end of spin */
+
+/* end of animations */
+
+/* 10. GOOGLE RECAPTCHA */
+
+    .gf-google-recaptcha-wrapper {
+        padding: 15px 30px;
+    }
+
+/* end of google recaptcha */
+
+/* 11. PROGRESS BAR */
+
+    /* 11.1 PROGRESS BAR CONTAINER  */
+
+        .gf-progress-bar-wrapper {
+            width: 45%;
+            margin: auto;
+            height: 5px;
+            background-color: #d9d9d9;
+            border-radius: 90px;
+        }
+
+    /* end of progress bar container */
+
+    /* 11.2 PROGRESS BAR */
+
+        .gf-progress-bar {
+            background-color: #04AA6D;
+            border-radius: 90px;
+            height: 100%;
+            width: 0;
+            transition: width 0.6s;
+        }
+
+    /* end of progress bar */
+
+    @media only screen and (max-width: 1192px) {
+
+        .gf-progress-bar-wrapper {
+            width: 80%;
+        }
+
+    }
+
+    @media only screen and (max-width: 768px) {
+
+        .gf-progress-bar-wrapper {
+            width: 90%;
+        }
+
+    }
+
+/* end of progress-bar */
