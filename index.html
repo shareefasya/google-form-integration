@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+    
+        <!-- document's content type -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        
+        <!-- make the document responsive -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- add microsoft edge compatibility -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+        <!-- document's title -->
+        <title>My  Google Form</title>
+
+        <!-- link javascript class's styles -->
+        <link rel="stylesheet" href="css/google-form-class-styles.css">
+
+        <!-- link javascript class -->
+        <script src="js/google-form-class-script.js"></script>
+
+    </head>
+
+    <body>
+    
+        <script>
+
+            new GoogleForm({
+                form: {
+                    id: "ENTER FORM ID",
+                    webAppURL: "ENTER WEP APP URL"                    
+                },
+                redirect: "ENTER REDIRECT URL",
+                recaptcha: {
+                    sitekey: 'ENTER SITEKEY',
+                    secretKey: 'ENTER SECRET KEY'
+                }
+            });
+
+        </script>
+
+    </body>
+    
+</html>
