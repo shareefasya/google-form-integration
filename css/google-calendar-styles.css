@@ -1,0 +1,610 @@
+
+/* 1. GLOBAL VARIABLES */
+
+    :root {
+        --blue: #4484f4;
+        --white: #fff;
+        --offWhite: #f1f3f4;
+        --black: #000;
+        --gray: #666;
+        --darkGray: #222
+    }
+
+/* end of global variables*/
+
+/* 2. DEFAULTS */
+
+    .gc-wrapper, .gc-wrapper * {
+    	margin: 0;
+    	padding: 0;
+    	box-sizing: border-box;
+    	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+    }
+    
+    .gc-wrapper button {
+    	border: none;
+    	background-color: transparent;
+    }
+    
+    .gc-wrapper button:focus {
+    	outline: none;
+    }
+
+/* end of defaults */
+
+/* 3. WRAPPER */
+
+    .gc-wrapper {
+    	position: relative;
+    	width: 100%;
+    	user-select: none;
+    	overflow: hidden;
+    }
+
+/* end of wrapper */
+
+/* 4. INPUT */
+
+    .gc-input {
+        position: absolute;
+        top: -100%;
+        z-index: -99;
+    }
+
+/* end of input */
+
+/* 5. ARROW */
+
+    .gc-date-picker-arrow {
+        padding: 0 10px;
+        transition: color 0.6s ease, fill 0.6s ease;
+        background-color: transparent;
+        border: none;
+    }
+    
+    .gc-date-picker-arrow svg {
+    	width: 24px;
+        height: 24px;
+        fill: var(--black);
+        transition: fill 0.6s ease;
+    }
+    
+    .gc-date-picker-arrow:hover svg, .gc-date-picker-arrow:focus svg {
+    	fill: var(--blue);
+    }
+
+/* end of arrow */
+
+/* 6. CALENDAR */
+
+    /* 6.1 container */
+
+        .gc-date-picker-calendar {
+            padding: 0 20px 0 0;
+            width: 100%;
+            height: 100%;
+            transition: height 0.6s ease;
+        }
+
+    /* end of container */
+
+    /* 6.2 CONTROLS */
+
+        .gc-date-picker-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 15px;
+        }
+        
+        .gc-date-picker-controls .gc-date-picker-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: transparent;
+            font-weight: bold;
+        }
+        
+        .gc-date-picker-month-and-year-controls, .gc-date-picker-previous-and-next-arrow-controls {
+            display: flex;
+        }
+        
+        .gc-date-picker-month-controls, .gc-date-picker-year-controls {
+            position: relative;
+        }
+        
+        .gc-date-picker-month-controls-text, .gc-date-picker-year-controls-text {
+            display: block;
+            text-align: center;
+            margin: 0;
+            height: 45px;
+            line-height: 45px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.6s, color 0.6s;
+            color: var(--black) !important;
+        }
+        
+        .gc-date-picker-month-controls-text:hover,
+        .gc-date-picker-year-controls-text:hover,
+        .gc-date-picker-month-controls-text:focus,
+        .gc-date-picker-year-controls-text:focus {
+            opacity: 0.6;
+            color: var(--blue) !important;
+        }
+        
+        .gc-date-picker-month-controls-text {
+            margin-right: 10px;
+        }
+        
+        .gc-date-picker-year-controls-text {
+            width: 50px;
+        }
+
+        @media only screen and (max-width: 360px) {
+
+            .gc-date-picker-controls {
+                padding-left: 0;
+            }
+            
+        }           
+
+    /* end of controls */
+
+    /* 6.3 MONTH AND YEAR CONTAINER */
+        
+        .gc-date-picker-month-options, .gc-date-picker-year-options {
+            position: absolute;
+            top: 2px;
+            left: 0;
+            background-color: var(--white);
+            overflow: hidden;
+            overflow-y: auto;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+            z-index: 2;
+            height: 200px;
+        }
+        
+        .gc-date-picker-month-options::-webkit-scrollbar,
+        .gc-date-picker-year-options::-webkit-scrollbar {
+            width: 10px;
+        }
+            
+        .gc-date-picker-month-options::-webkit-scrollbar-track,
+        .gc-date-picker-year-options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 90px;
+        }
+            
+            
+        .gc-date-picker-month-options::-webkit-scrollbar-thumb,
+        .gc-date-picker-year-options::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 90px;
+            transition: background 0.6s
+        }
+            
+            
+        .gc-date-picker-month-options::-webkit-scrollbar-thumb:hover,
+        .gc-date-picker-year-options::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }        
+        
+        .gc-date-picker-month-options.gc-hide, .gc-date-picker-year-options.gc-hide {
+            display: none;
+        }
+        
+        .gc-date-picker-month-options {
+            width: 110px;	
+        }
+        
+        .gc-date-picker-year-options {
+            width: 70px;
+        }
+        
+    /* end of month and year container */
+      
+    /* 6.4 MONTH AND YEAR OPTION */
+
+        .gc-date-picker-month-option, .gc-date-picker-year-option {
+            display: block;
+            padding: 14px 16px;
+            font-size: 16px;
+            line-height: 22px;
+            color: var(--gray) !important;
+            cursor: pointer;
+            transition: color 0.6s ease, opacity 0.6s ease;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .gc-date-picker-month-option:hover,
+        .gc-date-picker-year-option:hover,
+        .gc-date-picker-month-option:focus,
+        .gc-date-picker-year-option:focus {
+            color: var(--blue) !important;
+        }
+        
+        .gc-date-picker-month-option.gc-selected, 
+        .gc-date-picker-month-option.gc-selected:hover,
+        .gc-date-picker-year-option.gc-selected, 
+        .gc-date-picker-year-option.gc-selected:hover {
+            background-color: var(--blue) !important;
+            color: var(--white) !important;
+            font-weight: 500;
+        }
+        
+        .gc-date-picker-year-option.gc-selected:focus,
+        .gc-date-picker-month-option.gc-selected:focus {
+            opacity: 0.6;
+        }
+
+    /* end of month and year option */
+
+    /* 6.5 DAYS AND WEEKDAYS */
+
+        .gc-date-picker-days,  .gc-date-picker-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-row-gap: 5px;
+        }
+        
+        .gc-date-picker-day, .gc-date-picker-weekday { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 5px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 16px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: auto;
+        }
+        
+        .gc-date-picker-weekday {
+            font-weight: 600;
+            color: var(--black);
+        }
+        
+        .gc-date-picker-day {
+            background-color: transparent;
+            border-radius: 50%;
+            transition: background-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+            color: var(--gray) !important;
+            border: none;
+            cursor: default;
+        }
+        
+        .gc-date-picker-day.gc-hasDay {
+            cursor: pointer;
+        }
+        
+        .gc-date-picker-day.gc-hasDay:hover, .gc-date-picker-day.gc-hasDay:focus {
+            background-color: #eee !important;
+        }
+        
+        .gc-date-picker-day.gc-selected,
+        .gc-date-picker .gc-date-picker-day.gc-selected.gc-today,
+        .gc-date-picker-day.gc-selected:hover {
+            background-color: var(--blue) !important;
+            color: var(--white) !important;
+            box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.3);
+            font-weight: 500;
+        }
+        
+        .gc-date-picker-day.gc-selected:focus,
+        .gc-date-picker .gc-date-picker-day.gc-selected.gc-today:focus {
+            box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.6);
+        }
+
+        .gf-invalid .gc-date-picker-day.gc-selected,
+        .gf-invalid .gc-date-picker-day.gc-selected.gc-today,
+        .gf-invalid .gc-date-picker-day.gc-selected:hover {
+            background-color: red !important;
+        }
+        
+        .gc-date-picker-day.gc-today {
+            color: #8099fd !important;
+            font-weight: 500;
+        }
+
+        .gf-invalid .gc-date-picker-day.gc-today {
+            color: red !important;
+        }
+        
+        .gc-date-picker-day.gc-disable,
+        .gc-date-picker-day.gc-disable:hover,
+        .gc-date-picker-day.gc-disable:focus {
+            opacity: 0.4;
+            background-color: var(--white) !important;
+            cursor: default;
+            color: var(--gray) !important;
+        }
+
+        .gc-date-picker-day.gc-disable.gc-selected,
+        .gf-invalid .gc-date-picker-day.gc-disabled.gc-selected {
+            background-color: #CFDCF4 !important;
+        }
+
+    /* end of days and weekdays */
+
+/* end of calendar */
+
+/* 7. LOADER */
+
+    .gc-loader-wrapper {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--black);
+        background-color: rgba(255,255,255,0.7);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .gc-loader-wrapper.gc-hide {
+        display: none;
+    }
+    
+    .gc-loader {
+        width: 30px;
+        height: 30px;
+        cursor: default;
+        border-radius: 50%;
+        position: relative;
+        margin: auto;
+        border: 3px var(--blue) solid;
+        border-right-color: transparent;
+        animation: gc-spin 2s linear infinite; 
+    }
+
+/* end of loader */
+
+/* 8. READ ONLY OVERLAY */
+
+    .date-picker-readonly-overlay {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--white);
+        background-color: rgba(255,255,255,0.7);
+        z-index: 11;    
+    }
+
+/* end of read-only overlay */
+
+/* 9. ALERT */
+
+    .gc-alert-wrapper {
+        display: block;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 12;
+        transition: ease 0.6s top;
+        background-color: var(--white);
+        background-color: rgba(255,255,255,0.7);
+    }
+    
+    .gc-alert-wrapper.gc-hide {
+        display: none;
+    }
+    
+    .gc-alert {
+        text-align: left;
+        background-color: var(--white);
+        box-shadow: rgba(0, 0, 0, 0.3) 0 1px 4px -1px;
+        padding: 20px;
+        width: 80%;
+        border-radius: 4px;
+        margin: 25% auto auto auto; 
+    
+    }
+    
+    .gc-alert p {
+        font-size: 14px;
+        opacity: 0.7;
+        line-height: 200%;
+        color: var(--gray);
+    }
+    
+    .gc-alert.gc-animate {
+      position: relative;
+      animation-name: gc-animatebottom;
+      animation-duration: 1s
+    }
+
+    .gc-alert-title-container {
+        padding: 20px;
+    }
+
+    .gc-alert-title {
+        font-weight: normal;
+        font-size: 14px;
+        margin: 0;
+        opacity: 0.6;
+    }  
+
+/* end of alert */
+
+/* 10. TIME SLOT */
+
+    /* 10.1 WRAPPER */
+    
+        .gc-time-slots {
+            text-align: left;
+            margin-top: 10px;
+            max-height: 100%;
+            overflow: hidden;
+        }
+        
+        .gc-time-slots.gc-hide {
+            margin-top: 0;
+            max-height: 0;
+        }
+    
+    /* end of wrapper */
+    
+    /* 10.2 LABEL */
+    
+        .gc-time-slots-label {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--darkGray);
+            margin-left: 15px;
+        }
+    
+    /* end of label */
+    
+    /* 10.3 CONTAINER */
+    
+        .gc-time-slots-inner {
+            padding: 10px 0 5px 25px;
+        }
+
+        @media only screen and (max-width: 360px) {
+
+            .gc-time-slots-inner {
+                padding-left: 0;
+            }
+            
+        }          
+    
+    /* end of container */
+    
+    /* 10.4 SLOT */
+
+        .gc-time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px 0;
+            padding: 20px 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: var(--offWhite) !important;
+            color: var(--darkGray) !important;
+            font-size: 14px;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .gc-time-slot.gc-hide {
+            display: none;
+        }
+        
+        .gc-time-slot-icon {
+            font-size: 22px;
+            background-color: var(--blue);
+            opacity: 0.2;
+            min-width: 20px;
+            height: 20px;
+            color: var(--white);
+            border-radius: 50%;
+            transition: opacity ease 0.6s, box-shadow ease 0.6s;
+        }
+        
+        .gc-time-slot:hover .gc-time-slot-icon, 
+        .gc-time-slot.gc-selected .gc-time-slot-icon,
+        .gc-time-slot:focus .gc-time-slot-icon {
+            opacity: 1;
+            box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.3);
+        }
+
+        .gf-invalid .gc-time-slot-icon {
+            background-color: red;
+        }
+        
+        .gc-time-slot-text {
+            width: 100%;
+            margin-left: 15px;
+            opacity: 0.6;
+            transition: opacity ease 0.6s;
+        }
+        
+        .gc-time-slot:hover .gc-time-slot-text, 
+        .gc-time-slot.gc-selected .gc-time-slot-text,
+        .gc-time-slot:focus .gc-time-slot-text {
+            opacity: 1;
+        }
+
+        
+
+        @media only screen and (max-width: 360px) {
+
+            .gc-time-slot {
+                padding: 15px 15px;
+            }
+            
+        }          
+
+    /* end of slot */
+    
+    /* 10.5 LOAD MORE */
+
+        .gc-time-slots-load-more {
+            text-align: center;
+            display: inline-block;
+            font-size: 14px;
+            background-color: var(--white) !important;
+            padding: 5px 10px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px #ddd solid;
+            margin-left: 25px;
+            border-radius: 4px;
+            transition: background-color 0.6s ease;
+            color: var(--black) !important;
+        }
+        
+        .gc-time-slots-load-more:hover, .gc-time-slots-load-more:focus {
+            background-color: var(--offWhite) !important;
+        }
+        
+        .gc-time-slots-load-more.gc-disabled, 
+        .gc-time-slots-load-more.gc-disabled:hover, 
+        .gc-time-slots-load-more.gc-disabled:focus {
+            background-color: var(--white) !important;
+            cursor: default;
+            opacity: 0.4;
+        }
+
+    /* end of load more */
+
+/* end of time slot */
+
+/* 11. ANIMATIONS */
+
+    /* 11.1 SPIN */
+        
+        @keyframes gc-spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    
+    /* end of spin */
+    
+    /* 11.2 ANIMATE BOTTOM */
+        
+        @keyframes gc-animatebottom { 
+          from{ bottom:-100px; } 
+          to{ bottom:0; }
+        }
+    
+    /* end of animate bottom */
+
+/* end of animations */
