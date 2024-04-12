@@ -1,4 +1,4 @@
-/ 1. GLOBAL VARIABLES
+// 1. GLOBAL VARIABLES
 
   // 1.1 stores the Form Service script (will be set in the doPost function)
   let form;
@@ -39,23 +39,32 @@ function doPost(e) {
 
   try {
 
-    // set the form
-    form = FormApp.openById(e.parameter.formId);
+    if ( e.parameter.formId ) { // if a form was sent in the request...
 
-    // get the form's question and layout items
-    form_items = form.getItems();
-    
+      // set the form
+      form = FormApp.openById(e.parameter.formId);
+
+      // get the form's question and layout items
+      form_items = form.getItems();
+
+    }
+
     // complete the request
 
     if ( e.parameter.request == "get-form" ) { // if the request is to retrieve the form's properies...
 
       // return the form's properties
-      return returnFormProperties();
+      return returnFormProperties(e);
 
     } else if ( e.parameter.request == "submit-response" ) { // if the request to submit a response...
 
       // submit the response
       return submitResponse(e);
+
+    } else if ( e.parameter.request == "get-events" ) { // if the request is for calendar events...
+
+      // return events
+      return getCalendarEvents(e);
 
     } else { // if the request is anything else...
 
@@ -68,7 +77,7 @@ function doPost(e) {
   } catch(error) {
 
       return ContentService
-              .createTextOutput( JSON.stringify({result: "error", response: error}) )
+              .createTextOutput( JSON.stringify({result: "error", response: error.stack, request: e, }) )
               .setMimeType(ContentService.MimeType.JSON);
 
   }
@@ -83,7 +92,10 @@ function doPost(e) {
 // 3. ACTIONS
 
 // 3.1 returns a form's properties
-function returnFormProperties() {
+function returnFormProperties(e) {
+
+  // function parameter defined:
+  // e-> properties submitted during te request
 
   try {  
 
@@ -93,6 +105,7 @@ function returnFormProperties() {
       summary: form.getDescription(), // form's summary
       isAcceptingResponses: form.isAcceptingResponses(), // determines if the form is accepting responses
       hasProgressBar: form.hasProgressBar(), // determines if the form has a progress bar
+      publishedURL: form.getPublishedUrl(), // returns the form's url
       items: [], // form's items
     };
 
@@ -177,7 +190,7 @@ function returnFormProperties() {
   } catch(error) {
 
     return ContentService
-            .createTextOutput( JSON.stringify({result: "error", response: error}) )
+            .createTextOutput( JSON.stringify({result: "error", response: error.stack, request: e}) )
             .setMimeType(ContentService.MimeType.JSON);    
 
   }
@@ -199,7 +212,7 @@ function submitResponse(e) {
         form_items.forEach( item => {
 
           // get the item's type
-          let item_type = returnFormItemType(item);
+          const item_type = returnFormItemType(item);
 
           // get the single response's value
           let response_value = e.parameter[item.getId()];
@@ -211,27 +224,10 @@ function submitResponse(e) {
 
             }
 
-            if ( item.getType() == item_types.checkbox ) { // if it's a date...
+            if ( item.getType() == item_types.checkbox ) { // if it's a checkbox...
 
               // parse the value
-              response_value = [];
-
-              // get the checkboxes
-              const checkboxes = returnChoices(item_type);
-
-              checkboxes.forEach( (checkbox, c) => {
-
-                // set the checkbox's id
-                const checkbox_id = item.getId() + "_" + c;
-
-                if ( !isBlank(e.parameter[checkbox_id]) ) { // if the checkbox was checked...
-
-                  // store the checkboxes value
-                  response_value.push(e.parameter[checkbox_id]);
-
-                }
-
-              } );
+              response_value = returnCheckboxValue(item, e);
 
             } else if ( item.getType() == item_types.date ) { // if it's a date...
 
@@ -241,64 +237,12 @@ function submitResponse(e) {
             } else if ( item.getType() == item_types.grid ) { // if it's a grid...
 
               // get the value for each row in the grid
-
-              let rows = item_type.getRows();
-
-              response_value = [];
-
-                rows.forEach( (row, r) => {
-
-                  const row_id = item.getId() + "_" + r;
-
-                  let value = null;
-
-                    if ( !isBlank(e.parameter[row_id]) ) {
-
-                      value = e.parameter[row_id];
-
-                    }
-
-                    response_value.push(value);
-
-                } );
+              response_value = returnGridValue(item, e);
 
             } else if ( item.getType() == item_types.checkboxGrid ) { // if it's a checkbox grid...
 
                 // get the value for each row in the grid
-
-                response_value = [];
-
-                const rows = item_type.getRows();
-
-                const columns = item_type.getColumns();
-
-                rows.forEach( (row, r) => {
-
-                  let row_values = [];
-
-                  columns.forEach( (column, c) => {
-
-                    const column_id = item.getId() + "_" + r + "_" + c;
-
-                    if ( isBlank(e.parameter[column_id]) ) {
-
-                      return;
-
-                    }
-
-                    row_values.push(e.parameter[column_id]);
-
-                  } );
-
-                  if ( row_values.length == 0 ) {
-
-                    row_values = null;
-
-                  }
-
-                  response_value.push(row_values);
-
-                } );
+                response_value = returnCheckboxGridValues(item, e);
 
             }
           
@@ -322,6 +266,13 @@ function submitResponse(e) {
 
         form_response.submit();
 
+    if ( e.parameter.calendarId ) { // if a calendar was submitted...
+
+      // create a calendar event
+      createCalendarEvent(e);
+
+    }
+
     return ContentService
            .createTextOutput( JSON.stringify({result: "success", response: e}) )
            .setMimeType(ContentService.MimeType.JSON);
@@ -329,12 +280,117 @@ function submitResponse(e) {
   } catch (error) {
 
     return ContentService
-            .createTextOutput( JSON.stringify({result: "error", response: error}) )
+            .createTextOutput( JSON.stringify({result: "error", response: error.stack, request: e}) )
             .setMimeType(ContentService.MimeType.JSON);
 
   }
 
 }
+
+// 3.3 retrieves calendar events
+function getCalendarEvents(e) {
+
+  // function parameter defined:
+  // e -> properties sent during request
+
+  try {
+
+    // get the calendar
+    const calendar = CalendarApp.getCalendarById(e.parameter.calendarId);
+
+    // retrieve events
+    const events = calendar.getEventsForDay(new Date(e.parameter.eventDate));
+
+    // store the events
+    let return_events = [];
+
+      for ( i in events ) {
+
+        const event = {
+          start: events[i].getStartTime(),
+          end: events[i].getEndTime()
+        };
+
+        return_events.push(event);
+
+      }
+
+    return ContentService
+            .createTextOutput( JSON.stringify({result: "success", response: return_events}) )
+            .setMimeType(ContentService.MimeType.JSON);    
+
+  } catch(error) {
+
+      return ContentService
+              .createTextOutput( JSON.stringify({result: "error", response: error.stack, request: e,}) )
+              .setMimeType(ContentService.MimeType.JSON);
+
+  }
+
+}
+
+// 3.4 creates a calendar event
+function createCalendarEvent(e) {
+
+  // function parameter defined:
+  // e -> properties sent in the resquest
+
+  try {
+
+    // get the event's start and end date
+    let event_start_end_date = e.parameter[`${e.parameter.calendarId}_calendar`];
+
+      if ( !isBlank(event_start_end_date) ) {
+
+        // parse the event's start and end date
+        event_start_end_date = JSON.parse(event_start_end_date);
+
+        // get the calendar
+        const calendar = CalendarApp.getCalendarById(e.parameter.calendarId);  
+
+        // set the event's title
+        const event_title = `Event created via ${form.getTitle()}`; 
+
+        // set the event's options
+        let event_options = {};
+
+          // set the description
+          event_options.description = "";
+
+            // append the form response to the description
+            const form_response = serializeFormResponse(e);
+
+            form_response.forEach( ( field, f ) => {
+
+              if ( field.type == item_types.grid || field.type == item_types.checkboxGrid ) {
+
+                return;
+
+              }
+
+              event_options.description += `${field.label}: ${field.value}`;
+
+              if ( f < (form_response.length - 1) ) {
+
+                event_options.description += "\n";
+
+              }
+
+            } );
+
+        // create the event
+        let event = calendar.createEvent(event_title, new Date(event_start_end_date.start), new Date(event_start_end_date.end), event_options);
+
+      }
+
+  } catch(error) {
+
+      return error;
+
+  }
+  
+}
+
 
 
 
@@ -475,4 +531,154 @@ function isBlank(str) {
           
   return (!str || /^\s*$/.test(str));
                     
+}
+
+// 4.5 serializes the form's submission
+function serializeFormResponse(response) {
+
+  // function parameters defined:
+  // response -> the form's submission
+
+  let serialize = [];
+
+    form_items.forEach( item => {
+
+      let response_value = response.parameter[item.getId()];
+
+        if ( isBlank(response_value) ) {
+
+          return;
+
+        }       
+
+      let serial = {
+        label: item.getTitle(),
+        value: response_value,
+        type: item.getType()
+      };
+
+        if ( item.getType() == item_types.checkbox ) {
+
+          serial.value = returnCheckboxValue(item, response);
+
+        } else if ( item.getType() == item_types.grid ) {
+
+          serial.value = returnGridValue(item, response);
+
+        } else if ( item.getType() == item_types.checkboxGrid ) {
+
+          serial.value = returnCheckboxGridValues(item, response);
+
+        }
+
+        serialize.push(serial);
+
+    } );
+
+    return serialize;  
+
+}
+
+// 4.6 returns a checkboxe's values
+function returnCheckboxValue(item, response) {
+
+  // get the item's type
+  let item_type = returnFormItemType(item); 
+
+  // will the checkbox values
+  let checkbox_values = [];
+
+  // get the checkboxes
+  const checkboxes = returnChoices(item_type);
+
+  checkboxes.forEach( (checkbox, c) => {
+
+    // set the checkbox's id
+    const checkbox_id = `${item.getId()}_${c}`;
+
+    if ( !isBlank(response.parameter[checkbox_id]) ) { // if the checkbox was checked...
+
+      // store the checkboxes value
+      checkbox_values.push(response.parameter[checkbox_id]);
+
+    }
+  
+  } );
+
+  return checkbox_values;
+
+}
+
+// 4.7 returns a grid's values
+function returnGridValue(item, response) {
+
+  // get the item's type
+  let item_type = returnFormItemType(item); 
+
+  let rows = item_type.getRows();
+
+  let grid_values = [];
+
+    rows.forEach( (row, r) => {
+
+      const row_id = `${item.getId()}_${r}`;
+
+      let value = null;
+
+        if ( !isBlank(response.parameter[row_id]) ) {
+
+          value = response.parameter[row_id];
+
+        }
+
+        grid_values.push(value);
+
+    } );
+
+    return grid_values;
+
+}
+
+// 4.8 returns a checkbox grid's values
+function returnCheckboxGridValues(item, response) {
+
+  // get the item's type
+  let item_type = returnFormItemType(item);   
+
+  let checkbox_grid_values = [];
+
+  const rows = item_type.getRows();
+
+  const columns = item_type.getColumns();
+
+  rows.forEach( (row, r) => {
+
+    let row_values = [];
+
+    columns.forEach( (column, c) => {
+
+      const column_id = `${item.getId()}_${r}_${c}`;
+
+      if ( isBlank(response.parameter[column_id]) ) {
+
+        return;
+
+      }
+
+      row_values.push(response.parameter[column_id]);
+
+    } );
+
+    if ( row_values.length == 0 ) {
+
+      row_values = null;
+
+    }
+
+    checkbox_grid_values.push(row_values);
+
+  } );
+
+  return checkbox_grid_values;
+
 }
