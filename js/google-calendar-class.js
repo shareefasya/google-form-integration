@@ -1171,7 +1171,7 @@ class GoogleCalendar {
        this.alert.text.textContent = message;
        
        // display the alert box
-       this.alert.classList.remove("gc-hide");
+       this.alert.container.classList.remove("gc-hide");
         
     }
 	
